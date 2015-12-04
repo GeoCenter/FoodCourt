@@ -9,7 +9,7 @@ library(RColorBrewer)
 
 # Import and clean data ---------------------------------------------------
 
-fc = readr::read_csv(file = 'foodcourt.csv', 
+fc = readr::read_tsv(file = '~/GitHub/FoodCourt/data/foodcourt.tsv', 
                 col_types = 'icciiciicc') 
 
 # Remove duplicate month column name.
@@ -73,8 +73,9 @@ fcDayTime = fc %>%
             num = n())
 
 
+
+
 # simple plots ------------------------------------------------------------
-fc = fc %>% slice(1:100)
 
 ggplot(fc, aes(x = Date, y = 1, fill = Visitors)) +
   # geom_bar(stat = 'identity') +
