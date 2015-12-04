@@ -12,9 +12,10 @@ library(RColorBrewer)
 fc = readr::read_csv(file = 'foodcourt.csv', 
                 col_types = 'icciiciicc') 
 
-# Remove duplicate month
+# Remove duplicate month column name.
 colnames(fc)[8] = 'Month_num'
 
+# Convert times from strings to times using lubridate 
 fc = fc %>% 
   mutate(Date = mdy(Date),
        time = hm(Time))
@@ -23,8 +24,12 @@ fc = separate(fc, Time, into = c('hr', 'min'), sep = 2) %>%
   mutate(hr = as.numeric(str_replace(hr, ':', '')),
          min = as.numeric(str_replace(min, ':', '')))
 
+# Reorder the days of the week.
 fc$day = factor(fc$day, rev(c('Sunday', 'Monday', 'Tuesday', 'Wednesday', 
                           'Thursday', 'Friday', 'Saturday')))
+
+
+# Aggregate up ------------------------------------------------------------
 
 # By month
 fcMon = fc %>% 
@@ -89,7 +94,7 @@ ggplot(fcDate, aes(x = Day, y = avg)) +
 ggplot(fcTime, aes(x = hr, y = avg, group = 1)) +
   geom_line()
 
-ggplot(fcDayTime, aes(y = day, x = hr, fill = tot)) +
+ggplot(fcDayTime, aes(y = day, x = hr, fill = avg)) +
   geom_tile() +
   scale_fill_gradientn(colours = brewer.pal(9, 'YlGnBu')) +
   theme_bw() 
