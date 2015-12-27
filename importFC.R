@@ -65,20 +65,27 @@ fcTime = fc %>%
             num = n())
 
 # By day and time
-fcDayTime = fc %>% 
-  group_by(day, hr) %>% 
-  summarise(avg = mean(Visitors), 
-            tot = sum(Visitors),
-            std = sd(Visitors),
-            num = n())
+# fcDayTime = fc %>% 
+#   group_by(day, hr) %>% 
+#   summarise(avg = mean(Visitors), 
+#             tot = sum(Visitors),
+#             std = sd(Visitors),
+#             num = n())
 
+fcDayTime = fc %>% 
+  group_by(day, hour = hr) %>% 
+  summarise(value = round(mean(Visitors)))
+
+
+# export ------------------------------------------------------------------
+write_tsv(fcDayTime, '~/GitHub/FoodCourt/D3/data.tsv')
 
 
 
 # simple plots ------------------------------------------------------------
 
 ggplot(fc, aes(x = Date, y = 1, fill = Visitors)) +
-  # geom_bar(stat = 'identity') +
+  geom_bar(stat = 'identity') +
   coord_polar()
 
 
@@ -98,4 +105,10 @@ ggplot(fcTime, aes(x = hr, y = avg, group = 1)) +
 ggplot(fcDayTime, aes(y = day, x = hr, fill = avg)) +
   geom_tile() +
   scale_fill_gradientn(colours = brewer.pal(9, 'YlGnBu')) +
-  theme_bw() 
+  theme_bw()
+
+
+ggplot(fcDayTime, aes(y = avg, x = day, fill = avg, group = hr)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  scale_fill_gradientn(colours = brewer.pal(9, 'YlGnBu')) +
+  theme_bw()
